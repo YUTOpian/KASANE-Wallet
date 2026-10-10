@@ -1,0 +1,136 @@
+/* KASANE colours for the plain-HTML parts of the page (headings, <code>). main.tsx sets
+   data-theme (dark / light) and data-chain (symbol / nem) on <html>; MUI components get the same
+   look from theme/kasaneTheme.ts. */
+:root {
+  --text: #4A4150;
+  --text-h: #2B262D;
+  --bg: #F8F2F5;
+  --border: rgba(43, 38, 45, 0.12);
+  --code-bg: #EFE5EB;
+  --accent: #B8517F;
+  --accent-bg: rgba(184, 81, 127, 0.08);
+  --accent-border: rgba(184, 81, 127, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: 'Avenir Next', 'Century Gothic', 'Futura', 'Hiragino Sans', 'Yu Gothic', 'Segoe UI', system-ui, sans-serif;
+  --heading: var(--sans);
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+:root[data-chain='nem'] {
+  --bg: #F0F7F5;
+  --code-bg: #DDEEE9;
+  --accent: #23917C;
+  --accent-bg: rgba(35, 145, 124, 0.08);
+  --accent-border: rgba(35, 145, 124, 0.5);
+}
+
+/* data-chain='base' (first-run screens) keeps the default mauve stage; only the accent is neutral. */
+
+/* Dark variant (the default). */
+:root[data-theme='dark'] {
+  --text: #E6EDBE;
+  --text-h: #F1F6CF;
+  --bg: #2B262D;
+  --border: rgba(234, 244, 166, 0.22);
+  --code-bg: #3A343D;
+  --accent: #E58AAE;
+  --accent-bg: rgba(229, 138, 174, 0.12);
+  --accent-border: rgba(229, 138, 174, 0.5);
+  color-scheme: dark;
+}
+
+:root[data-theme='dark'][data-chain='nem'] {
+  --bg: #232A29;
+  --code-bg: #2F3A38;
+  --accent: #7ED1C0;
+  --accent-bg: rgba(126, 209, 192, 0.12);
+  --accent-border: rgba(126, 209, 192, 0.5);
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+#root > * {
+  min-width: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
+
+:root[data-theme='dark'][data-chain='base'] {
+  --accent: #B79BD0;
+  --accent-bg: rgba(183, 155, 208, 0.12);
+  --accent-border: rgba(183, 155, 208, 0.5);
+}
