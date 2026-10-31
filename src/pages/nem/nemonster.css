@@ -1,0 +1,625 @@
+/* NEMonster artwork, from the official NEM Nano Wallet (css/NEMonster.css). Every rule is scoped to
+   .nemonster-scope so none of these generic class names (.monster, .eyes, .face, ...) leaks into the app. */
+.nemonster-scope .MonsterContainer {
+    position: relative;
+}
+.nemonster-scope .monster,
+.nemonster-scope .monster2,
+.nemonster-scope .eyes,
+.nemonster-scope .iris,
+.nemonster-scope .mouth,
+.nemonster-scope .mouth2,
+.nemonster-scope .mouth3,
+.nemonster-scope .mouth4,
+.nemonster-scope .mouth5,
+.nemonster-scope .mouth6,
+.nemonster-scope .face,
+.nemonster-scope .Monstertext {
+  position: absolute;
+}
+.nemonster-scope .grad {
+  background-image: radial-gradient(circle, #ffd612, #ecdc00, #d8e100, #c1e600, #a8eb12);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad2 {
+  background-image: radial-gradient(circle, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad3 {
+  background-image: radial-gradient(circle, #ff1262, #ff5145, #ff7f27, #ffa803, #ebcd12);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad4 {
+  background-image: radial-gradient(circle, #12ffa0, #93d73c, #c6a800, #e46f00, #eb1236);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad5 {
+  background-image: radial-gradient(circle, #12ffa0, #32ea7f, #40d55e, #48c03d, #4cab14);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad6 {
+  background-image: radial-gradient(circle, #12ffa0, #00d4d2, #00a2f8, #006af1, #2214ab);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad7 {
+  background-image: radial-gradient(circle, #e6ff12, #c2fb0f, #9bf61b, #6cf12b, #13eb3b);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad8 {
+  background-image: radial-gradient(circle, #ff12de, #da09e3, #b014e7, #7b21ea, #132beb);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .grad9 {
+  background-image: radial-gradient(circle, #ff12de, #ff00a8, #ff0074, #ff0045, #eb1313);
+  background-color:none;
+  background-color:transparent;
+}
+.nemonster-scope .MonsterContainer {
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 200px;
+  height: 200px;
+}
+.nemonster-scope .face {
+  left: -3px;
+}
+.nemonster-scope .monster {
+  width: 150px;
+  height: 150px;
+  border-radius: 100%;
+  -webkit-box-shadow: inset -17px -14px 53px 1px          rgba(0,0,0,0.26);
+  -moz-box-shadow: inset -17px -14px 53px 1px        rgba(0,0,0,0.26);
+  box-shadow: inset -17px -14px 53px 1px  rgba(0,0,0,0.26);
+}
+.nemonster-scope .monster:before,
+.nemonster-scope .monster:after {
+  position: absolute;
+  content: '';
+  width: 20px;
+  height: 30px;
+  background: inherit;
+}
+.nemonster-scope .monster:after {
+  left: 20px;
+  border-radius: 100% 0 0 0;
+  z-index: -1;
+}
+.nemonster-scope .monster:before {
+  left: 110px;
+  border-radius: 0 100% 0 0;
+  z-index: -1;
+}
+.nemonster-scope .monster2 {
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    -webkit-box-shadow: inset -17px -14px 53px 1px          rgba(0,0,0,0.26);
+    -moz-box-shadow: inset -17px -14px 53px 1px        rgba(0,0,0,0.26);
+    box-shadow: inset -17px -14px 53px 1px  rgba(0,0,0,0.26);
+}
+.nemonster-scope .monster2:before,
+.nemonster-scope .monster2:after {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 30px;
+    background: inherit;
+}
+.nemonster-scope .monster2:after {
+    left: 20px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    z-index: -1;
+}
+.nemonster-scope .monster2:before {
+    left: 110px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    z-index: -1;
+}
+.nemonster-scope .hair {
+  position: absolute;
+  top: -2px;
+  left: 67px;
+  width: 10px;
+  height: 10px;
+  border-radius: 100% 0 100% 100%;
+  transform: rotate(-20deg);
+  z-index: -1;
+}
+.nemonster-scope .hair:before {
+    position: absolute;
+   content: '';
+   top: 3px;
+ left: 10px;
+ width: 10px;
+ height: 10px;
+ background: inherit;
+ border-radius: 100% 0 100% 100%;
+}
+.nemonster-scope .hair2 {
+    position: absolute;
+    top: -10px;
+    left: 67px;
+    width: 25px;
+    height: 15px;
+    -webkit-clip-path: polygon(72% 4%, 46% 88%, 84% 30%, 71% 100%, 60% 100%, 50% 100%, 19% 100%, 0 100%, 40% 0, 25% 83%);
+    clip-path: polygon(72% 4%, 46% 88%, 84% 30%, 71% 100%, 60% 100%, 50% 100%, 19% 100%, 0 100%, 40% 0, 25% 83%);
+    transform: rotate(5deg);
+    z-index: -1;
+}
+.nemonster-scope .eyes {
+  width: 30px;
+  height: 30px;
+  background: #FFF;
+  top: 50px;
+  left: 30px;
+  border-radius: 100%;
+}
+.nemonster-scope .eyes:before {
+    position: absolute;
+    content: '';
+    width: 30px;
+    height: 30px;
+    background: #FFF;
+    left: 70px;
+    border-radius: 100%;
+}
+.nemonster-scope .eyes2 {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: #FFF;
+  top: 50px;
+  left: 30px;
+  border-radius: 100%;
+}
+.nemonster-scope .eyes2:before {
+    position: absolute;
+    content: '';
+    width: 30px;
+    height: 30px;
+    background: #FFF;
+    left: 70px;
+    border-radius: 100%;
+}
+.nemonster-scope .eyes3 {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: #FFF;
+  top: 30px;
+  left: 55px;
+  border-radius: 100%;
+}
+.nemonster-scope .eyes4 {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #FFF;
+    top: 30px;
+    left: 55px;
+    border-radius: 100%;
+}
+.nemonster-scope .eyes5 {
+    position: absolute;
+    width: 35px;
+    height: 20px;
+    background: #FFF;
+    top: 50px;
+    left: 40px;
+    border-radius: 0% 0% 100% 100%;
+}
+.nemonster-scope .eyes5:before {
+    position: absolute;
+    content: '';
+    width: 35px;
+    height: 20px;
+    background: #FFF;
+    left: 50px;
+    border-radius: 0% 0% 100% 100%;
+}
+.nemonster-scope .eyes6 {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #FFF;
+    top: 40px;
+    left: 45px;
+    border-radius: 80% 20% 80% 80%;
+}
+.nemonster-scope .eyes6:before {
+    position: absolute;
+    content: '';
+    width: 30px;
+    height: 30px;
+    background: #FFF;
+    left: 40px;
+    border-radius: 20% 80% 80% 80%;
+}
+.nemonster-scope .iris {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #59C3C3;
+  border-radius: 100%;
+  top: 5px;
+  left: 7px;
+}
+.nemonster-scope .iris:before {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    background: inherit;
+    border-radius: 100%;
+    left: 66px;
+}
+.nemonster-scope .iris2 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #000;
+  border-radius: 100%;
+  top: 5px;
+  left: 7px;
+}
+.nemonster-scope .iris2 div:nth-child(1) {
+    position: absolute;
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border-radius: 10%;
+    left: 0px;
+}
+.nemonster-scope .iris2:before {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    background: inherit;
+    border-radius: 100%;
+    left: 66px;
+}
+.nemonster-scope .iris2 div:nth-child(2) {
+    position: absolute;
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border-radius: 10%;
+    left: 66px;
+}
+.nemonster-scope .iris3 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #000;
+  border-radius: 100%;
+  top: 5px;
+  left: 7px;
+}
+.nemonster-scope .iris3 div:nth-child(1) {
+    position: absolute;
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 100%;
+    left: 5px;
+    top: 2px;
+}
+.nemonster-scope .iris4 {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #000;
+    -webkit-clip-path: ellipse(11% 43% at 50% 50%);
+    clip-path: ellipse(11% 43% at 50% 50%);
+    top: 5px;
+    left: 5px;
+}
+.nemonster-scope .iris5 {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    background-color: #000;
+    border-radius: 100%;
+    top: 5px;
+    left: 16px;
+}
+.nemonster-scope .iris5:before {
+    position: absolute;
+    content: '';
+    width: 13px;
+    height: 13px;
+    background: inherit;
+    border-radius: 100%;
+    left: 50px;
+}
+.nemonster-scope .iris6 {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background-color: #000;
+      border-radius: 100%;
+      top: 5px;
+      left: 7px;
+}
+.nemonster-scope .iris6 div:nth-child(1) {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 100%;
+      left: 10px;
+      top: 3px;
+}
+.nemonster-scope .iris6:before {
+      position: absolute;
+      content: '';
+      width: 16px;
+      height: 16px;
+      background: inherit;
+      border-radius: 100%;
+      left: 66px;
+      top: 5px;
+}
+.nemonster-scope .iris6 div:nth-child(2) {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 100%;
+      left: 69px;
+      top: 8px;
+}
+.nemonster-scope .iris7 {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #000;
+      border-radius: 100%;
+      top: 10px;
+      left: 10px;
+}
+.nemonster-scope .iris7:before {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: inherit;
+      border-radius: 100%;
+      left: 70px;
+}
+.nemonster-scope .iris8 {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: #000;
+        border-radius: 100%;
+        top: 5px;
+        left: 7px;
+}
+.nemonster-scope .iris8 div:nth-child(1) {
+        position: absolute;
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        border-radius: 60%;
+        left: 0px;
+}
+.nemonster-scope .iris8:before {
+        position: absolute;
+        content: '';
+        width: 20px;
+        height: 20px;
+        background: inherit;
+        border-radius: 100%;
+        left: 37px;
+}
+.nemonster-scope .iris8 div:nth-child(2) {
+        position: absolute;
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        border-radius: 60%;
+        left: 37px;
+}
+.nemonster-scope .iris9 {
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          background-color: #000;
+          border-radius: 100%;
+          top: 5px;
+          left: 7px;
+}
+.nemonster-scope .iris9 div:nth-child(1) {
+          position: absolute;
+          content: '';
+          width: 8px;
+          height: 8px;
+          background: #fff;
+          border-radius: 60%;
+          left: 10px;
+          top: 12px;
+}
+.nemonster-scope .iris9:before {
+          position: absolute;
+          content: '';
+          width: 20px;
+          height: 20px;
+          background: inherit;
+          border-radius: 100%;
+          left: 37px;
+}
+.nemonster-scope .iris9 div:nth-child(2) {
+          position: absolute;
+          content: '';
+          width: 8px;
+          height: 8px;
+          background: #fff;
+          border-radius: 60%;
+          left: 47px;
+           top: 12px;
+}
+.nemonster-scope .mouth {
+  overflow: hidden;
+  top: 90px;
+  left: 50px;
+  width: 60px;
+  height: 30px;
+  background: #603335;
+  border-radius: 0 0 100px 100px;
+  transition: all 0.5s ease;
+}
+.nemonster-scope .mouth:before {
+    position: absolute;
+    left: 17px;
+    top: 15px;
+    content: '';
+    width: 50px;
+    height: 30px;
+    background: #F6828C;
+    border-radius: 100%;
+}
+.nemonster-scope .mouth2 {
+  position: absolute; 
+  overflow: hidden;
+  top: 90px;
+  left: 50px;
+  width: 60px;
+  height: 3px;
+  background: #603335;
+  border-radius: 0 0 100px 100px;
+}
+.nemonster-scope .mouth3 {
+  position: absolute;
+  overflow: hidden;
+   overflow: hidden;
+      top: 90px;
+      left: 45px;
+      width: 65px;
+      height: 15px;
+      background: #603335;
+      border-radius: 60px 60px 00px 00px;
+}
+.nemonster-scope .mouth4 {
+    position: absolute; 
+    overflow: hidden;
+    top: 87px;
+    left: 53px;
+    width: 50px;
+    height: 15px;
+    border-radius: 50%;
+    background: #603335;
+}
+.nemonster-scope .mouth5 {
+      overflow: hidden;
+      top: 90px;
+      left: 50px;
+      width: 60px;
+      height: 30px;
+      background: #603335;
+      border-radius: 100px 100px 100px 100px;
+}
+.nemonster-scope .mouth5:before {
+      position: absolute;
+      left: 17px;
+      top: 15px;
+      content: '';
+      width: 50px;
+      height: 30px;
+      background: #F6828C;
+      border-radius: 100%;
+}
+.nemonster-scope .mouth6 {
+      overflow: hidden;
+      top: 90px;
+      left: 48px;
+      width: 60px;
+      height: 15px;
+      background: #603335;
+      border-radius: 0px 0px 60px 60px;
+}
+.nemonster-scope .teeth {
+  position: relative;
+  top: 90px;
+  left: 60px;
+}
+.nemonster-scope .teeth div:nth-child(1) {
+    position: absolute;
+    width: 7px;
+    height: 10px;
+    background: #FFF;
+    border-radius: 0 0 0 100%;
+}
+.nemonster-scope .teeth div:nth-child(2) {
+    position: absolute;
+    left: 30px;
+    width: 7px;
+    height: 10px;
+    background: #FFF;
+    border-radius: 0 0 100% 0;
+}
+.nemonster-scope .teeth3 {
+    position: relative;
+    top: 90px;
+    left: 60px;
+}
+.nemonster-scope .teeth3 div:nth-child(1) {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #FFF;
+    -webkit-clip-path: polygon(87% 21%, 75% 0, 65% 22%, 53% 2%, 43% 21%, 25% 0, 19% 21%, 0 0, 0 0, 100% 0);
+clip-path: polygon(87% 21%, 75% 0, 65% 22%, 53% 2%, 43% 21%, 25% 0, 19% 21%, 0 0, 0 0, 100% 0);
+}
+.nemonster-scope .teeth4 {
+    position: relative;
+    top: 90px;
+    left: 60px;
+}
+.nemonster-scope .teeth4 div:nth-child(1) {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #FFF;
+    -webkit-clip-path: polygon(89% 21%, 75% 13%, 64% 37%, 52% 11%, 33% 34%, 28% 10%, 10% 20%, 0 0, 16% 0, 100% 0);
+    clip-path: polygon(89% 21%, 75% 13%, 64% 37%, 52% 11%, 33% 34%, 28% 10%, 10% 20%, 0 0, 16% 0, 100% 0);
+}
+.nemonster-scope .Monstertext {
+  background: #000000 ;
+  border-radius: 100%;
+  height: 20px;
+  width: 130px;
+  top: 170px;
+  left: 16px;
+  font-family: sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  box-shadow: 5px 1px 1px #A2B7C0;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+
+/* The ears and hair sit behind the body (z-index: -1). Without their own stacking context they would
+   vanish behind the card's background, so each monster gets one. */
+.nemonster-scope .MonsterContainer {
+  isolation: isolate;
+}
