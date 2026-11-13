@@ -1,0 +1,435 @@
+/*
+ * Symbol 事前オプトイン（NEM Wallet 2.5.0）の画面の再現。
+ * 元は AngularJS + Bootstrap 3 + font-awesome で、スタイルは NanoWallet の src/sass/_new.scss の
+ * `.optin-page` まわり。ここではその値をそのまま使い、使っていた Bootstrap 3 の部品
+ * （container / row / col-md-* / form-control / input-group / btn）だけを .optin-root の中に書き直している。
+ * 外のアプリ（KASANE）のスタイルには触らない。
+ */
+.optin-root {
+  position: fixed;
+  inset: 0;
+  /* MUI の Drawer(1200) より上、Dialog(1300) より下：パスワードのポップアップが前に出るように */
+  z-index: 1250;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #3a0ca3;
+  font-family: "Noto Sans", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+}
+.optin-root *, .optin-root *::before, .optin-root *::after { box-sizing: border-box; }
+.optin-root.optin-root--white { background: #fff; }
+
+/* --- 背景（元は動画 / 画像を position: fixed で敷いていた） --- */
+.optin-root .imageLogo {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* --- Bootstrap 3 のグリッド（使っていたぶんだけ） --- */
+.optin-root .optin-content { position: relative; z-index: 1; padding-top: calc(48px + env(safe-area-inset-top, 0px)); padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); min-height: 100%; }
+.optin-root .container { width: 100%; margin: 0 auto; padding: 0 15px; }
+@media (min-width: 768px) { .optin-root .container { width: 750px; } }
+@media (min-width: 992px) { .optin-root .container { width: 970px; } }
+@media (min-width: 1200px) { .optin-root .container { width: 1170px; } }
+.optin-root .container-fluid { padding: 0 15px; }
+.optin-root .row { margin: 0 -15px; }
+.optin-root .row::after, .optin-root .container::after, .optin-root .container-fluid::after { content: ""; display: table; clear: both; }
+.optin-root [class*="col-"] { position: relative; min-height: 1px; padding: 0 15px; }
+@media (min-width: 992px) {
+  .optin-root .col-md-12, .optin-root .col-md-10, .optin-root .col-md-8, .optin-root .col-md-6 { float: left; }
+  .optin-root .col-md-12 { width: 100%; }
+  .optin-root .col-md-10 { width: 83.33333333%; }
+  .optin-root .col-md-8 { width: 66.66666667%; }
+  .optin-root .col-md-6 { width: 50%; }
+  .optin-root .col-md-offset-1 { margin-left: 8.33333333%; }
+  .optin-root .col-md-offset-2 { margin-left: 16.66666667%; }
+  .optin-root .col-md-offset-3 { margin-left: 25%; }
+  .optin-root .col-lg-6 { float: left; width: 50%; }
+}
+.optin-root .text-center { text-align: center; }
+.optin-root .text-left { text-align: left; }
+.optin-root .form-group { margin-bottom: 15px; }
+.optin-root .centered-col { display: inline-block; float: none; vertical-align: middle; }
+.optin-root .mt-4 { margin-top: 4rem; }
+.optin-root .mt-2 { margin-top: 2rem; }
+.optin-root .text-white { color: #fff; }
+.optin-root a { text-decoration: none; }
+
+/* --- Bootstrap の .btn / .form-control / .input-group --- */
+.optin-root .btn {
+  display: inline-block;
+  margin-bottom: 0;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.optin-root .btn[disabled], .optin-root .btn.is-disabled { cursor: not-allowed; opacity: 0.65; box-shadow: none; }
+.optin-root .form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.optin-root .form-control:focus { outline: 0; border-color: #66afe9; }
+.optin-root .input-group { position: relative; display: table; border-collapse: separate; width: 100%; }
+.optin-root .input-group .form-control { display: table-cell; position: relative; float: left; width: 100%; margin-bottom: 0; }
+.optin-root .input-group-addon, .optin-root .input-group-btn { display: table-cell; width: 1%; white-space: nowrap; vertical-align: middle; }
+.optin-root .input-group-addon { padding: 6px 12px; font-size: 14px; line-height: 1; color: #555; text-align: center; background-color: #eee; border: 1px solid #ccc; border-radius: 4px; border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 0; cursor: pointer; }
+.optin-root .input-group .form-control:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+
+/* --- _new.scss の記号類 --- */
+.optin-root .symbol-button {
+  background: rgb(181, 134, 246);
+  background: linear-gradient(42deg, rgba(181, 134, 246, 1) 0%, rgba(255, 255, 255, 1) 60%);
+  color: #44004E;
+  transition-duration: 0.4s;
+  border-radius: 10px;
+  width: 30%;
+  padding: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+  /* .optin-page .symbol-button */
+  width: auto;
+  padding: 15px 75px;
+  border-radius: 5px;
+  font-size: 15px;
+}
+.optin-root .symbol-button:hover:not([disabled]) {
+  background: rgb(181, 134, 246);
+  background: linear-gradient(42deg, rgba(181, 134, 246, 1) 60%, rgba(255, 255, 255, 1) 100%);
+  color: #44004E;
+}
+.optin-root .symbol-button:active:not([disabled]) {
+  background: rgb(181, 134, 246);
+  background: linear-gradient(42deg, rgba(181, 134, 246, 1) 60%, rgba(255, 255, 255, 1) 100%);
+  color: rgb(255, 0, 255);
+  border: 1px solid #cc00cc;
+}
+.optin-root .symbol-button .optin-ico { display: inline-block; line-height: 0; vertical-align: middle; }
+.optin-root .symbol-button .optin-ico svg { vertical-align: middle; }
+.optin-root .symbol-button .optin-ico--left { margin-right: 10px; }
+.optin-root .symbol-button .optin-ico--right { margin-left: 10px; }
+.optin-root .symbol-button__block { display: block; padding: 15px 0; width: 100%; }
+.optin-root .symbol-button--pink {
+  background: rgb(255, 0, 255);
+  background: linear-gradient(42deg, rgba(255, 0, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
+}
+.optin-root .float-right { float: right; }
+.optin-root .float-left { float: left; }
+.optin-root .symbol-link, .optin-root .symbol-link:hover { color: white; text-decoration: none; }
+
+.optin-root h1 { color: white; font-weight: 400; font-size: 45px; margin: 0; line-height: 1.1; }
+.optin-root p { color: white; font-size: 18px; margin: 0 0 10px; }
+.optin-root h4 { color: white; padding: 0; line-height: 35px; font-size: 18px; margin: 10px 0; font-weight: 500; }
+.optin-root h4 p { line-height: 35px; font-size: 18px; }
+.optin-root label { color: #5200c6; display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
+.optin-root .purple-dark, .optin-root p.purple-dark { color: #44004E; }
+
+.optin-root .progressBar { width: 100%; background-color: #ddd; border-radius: 50px; margin-top: 30px; }
+.optin-root #pBarOptIn {
+  width: 0;
+  height: 20px;
+  background-color: #ff00ff;
+  text-align: center;
+  color: white;
+  border-radius: 50px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.optin-root .container-div { margin: 20px 0 50px 0; }
+.optin-root .container-div .col-md-12 { display: flex; align-items: center; }
+.optin-root .container-div .col-md-12 img { height: 75px; margin-right: 40px; }
+.optin-root .welcome-page { position: fixed; left: 5%; top: 40%; z-index: 1; }
+.optin-root .optin-label-form {
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  border-radius: 5px;
+  color: #5200c6;
+  width: 93%;
+  font-weight: 700;
+  word-break: break-all;
+}
+.optin-root .optin-label-form-white {
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  color: #5200c6;
+  font-weight: 700;
+  word-break: break-all;
+}
+.optin-root .clipboard-icon { cursor: pointer; width: 30px; margin-left: 10px; vertical-align: middle; }
+.optin-root .optin-input {
+  background: transparent;
+  color: white;
+  border-bottom: 2px solid rgba(205, 0, 205, 0.5) !important;
+}
+.optin-root .icon-eye {
+  background: transparent;
+  color: #ff00ff;
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid rgba(205, 0, 205, 0.5) !important;
+}
+
+/* --- チェックボックス風の行（.inputGroupSymbol） --- */
+.optin-root .inputGroupSymbol { background-color: #fff; display: block; margin: 10px 0; position: relative; border-radius: 5px; }
+.optin-root .inputGroupSymbol label {
+  padding: 12px 30px;
+  width: 100%;
+  display: block;
+  text-align: left;
+  color: #5200c6;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 200ms ease-in;
+  overflow: hidden;
+  border-radius: 5px;
+  margin-bottom: 0;
+  font-weight: 700;
+}
+.optin-root .inputGroupSymbol label::before {
+  width: 100%;
+  height: 10px;
+  border-radius: 50%;
+  content: "";
+  background-color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale3d(1, 1, 1);
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  z-index: -1;
+}
+.optin-root .inputGroupSymbol label::after {
+  width: 32px;
+  height: 32px;
+  content: "";
+  border: 2px solid #D1D7DC;
+  border-radius: 50%;
+  z-index: 2;
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: all 200ms ease-in;
+}
+.optin-root .inputGroupSymbol input:checked ~ label { color: #ff00ff; border-radius: 5px; }
+.optin-root .inputGroupSymbol input:checked ~ label::before { transform: translate(-50%, -50%) scale3d(56, 56, 1); opacity: 1; }
+.optin-root .inputGroupSymbol input:checked ~ label::after {
+  background-color: white;
+  border: 0;
+  background-image: var(--optin-check-img);
+  background-size: contain;
+}
+.optin-root .inputGroupSymbol input { width: 32px; height: 32px; order: 1; z-index: 2; position: absolute; right: 30px; top: 50%; transform: translateY(-50%); cursor: pointer; visibility: hidden; }
+.optin-root .inputGroupSymbol.is-readonly label { cursor: default; }
+
+/* 利用規約の同意チェック（素のチェックボックス + ラベル） */
+.optin-root input[type="checkbox"].optin-plain { margin: 4px 6px 0 0; vertical-align: middle; }
+.optin-root .optin-agree { color: #44004E; font-weight: 700; display: inline; }
+.optin-root .optin-agree a { color: rgb(205, 0, 205); }
+
+/* --- 画面の隅の操作（元の画面にはない、閉じる / デモ表示） --- */
+.optin-root .optin-exit {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: 10px;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(40, 0, 60, 0.55);
+  color: #fff;
+  cursor: pointer;
+}
+.optin-root .optin-exit:hover { background: rgba(40, 0, 60, 0.8); }
+.optin-root .optin-demo {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  right: 12px;
+  z-index: 5;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: rgba(40, 0, 60, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.optin-root .optin-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: 90%;
+  padding: 10px 18px;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+}
+.optin-root .optin-toast.is-error { background: #b00020; }
+
+/* --- 完了後の画面（元は NEM Wallet 本体のスタイルの白い画面） --- */
+.optin-root .catapultOptin-page { position: relative; z-index: 1; background: #fff; min-height: 100%; padding-top: calc(56px + env(safe-area-inset-top, 0px)); padding-bottom: 40px; color: #444; }
+.optin-root .catapultOptin-page h2 { color: #3c3c3c; font-size: 30px; font-weight: 500; margin: 10px 0 20px; line-height: 1.1; }
+.optin-root .catapultOptin-page h3 { color: #3c3c3c; font-size: 22px; font-weight: 500; margin: 10px 0; }
+.optin-root .catapultOptin-page h4 { color: #444; font-size: 16px; line-height: 1.4; }
+.optin-root .catapultOptin-page h5.title-list { color: #5a6872; font-size: 14px; font-weight: 700; margin: 14px 0 6px; }
+.optin-root .catapultOptin-page label { color: #444; }
+.optin-root .catapultOptin-page .helper { text-align: right; padding-top: 14px; }
+.optin-root .catapultOptin-page .helper a { color: #5200c6; }
+.optin-root .catapultOptin-page .helper h4 { color: #5200c6; margin: 0; }
+.optin-root .catapultOptin-page .panel-heading { border-bottom: 1px solid #ddd; margin-bottom: 14px; }
+.optin-root .catapultOptin-page .tabDescription span { color: #7b8993; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+.optin-root .catapultOptin-page .nav-tabs { list-style: none; margin: 0; padding: 0; display: flex; }
+.optin-root .catapultOptin-page .nav-tabs li a { display: block; padding: 10px 15px; color: #555; border-bottom: 3px solid transparent; }
+.optin-root .catapultOptin-page .nav-tabs li.active a { color: #5200c6; border-bottom-color: #5200c6; font-weight: 700; }
+.optin-root .catapultOptin-page .margin-form { margin: 12px 0 6px; }
+.optin-root .catapultOptin-page .form-control[readonly] { background: #f5f6f7; word-break: break-all; height: auto; min-height: 34px; }
+.optin-root .catapultOptin-page .formFloat { display: flex; align-items: center; justify-content: space-between; height: 34px; background: #f5f6f7; }
+.optin-root .catapultOptin-page .formFloat input { border: 0; background: transparent; color: #555; width: 80%; font: inherit; }
+.optin-root .catapultOptin-page .list-group { list-style: none; margin: 0 0 4px; padding: 0; }
+.optin-root .catapultOptin-page .list-group-item { padding: 8px 14px; border: 1px solid #ddd; background: #fff; }
+.optin-root .catapultOptin-page .nothing { color: #7b8993; }
+.optin-root .catapultOptin-page .alert-success { color: #3c763d; background-color: #dff0d8; border: 1px solid #d6e9c6; border-radius: 4px; padding: 15px; margin: 0 0 20px; font-size: 16px; }
+
+@media (max-width: 767px) {
+  .optin-root h1 { font-size: 30px; }
+  .optin-root .container-div .col-md-12 img { height: 56px; margin-right: 20px; }
+  .optin-root .symbol-button { padding: 14px 28px; }
+  .optin-root .welcome-page { left: 4%; right: 4%; }
+}
+
+
+/* ---- 事後オプトイン（PostOptinPage）：当時の nano.css の見た目に合わせる ---------------------- */
+.optin-root.post-optin .status-color-2,
+.optin-root.post-optin .status-color-4,
+.optin-root.post-optin .status-color-5 { color: darkorange; }
+.optin-root.post-optin .status-color-6 { color: green; }
+.optin-root.post-optin .status-color-error { color: #d9534f; }
+
+.optin-root.post-optin .optin-label-form {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  text-align: left;
+  background-color: white;
+  border-radius: 5px;
+  color: #5200c6;
+  width: 100%;
+  border: none;
+  font-weight: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.optin-root.post-optin .optin-label-form label { font-weight: inherit; margin: 0; }
+.optin-root.post-optin .optin-label-form-white {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 10px 30px;
+  background-color: white;
+  border-radius: 5px;
+  color: #44004E;
+  border: 1px solid #44004E;
+  width: 100%;
+  font-weight: inherit;
+}
+
+/* 白い画面のパスワード欄（当時は .purple-dark に !important が付いていた） */
+.optin-root.post-optin input.purple-dark { color: #44004E !important; }
+
+/* 送信前の注意（アドレスの確認） */
+.optin-root .optin-confirm-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  background-color: #0005;
+}
+.optin-root .optin-confirm-modal {
+  width: 100%;
+  max-width: 940px;
+  height: 70%;
+  min-height: 380px;
+  max-height: calc(100vh - 6rem);
+  margin-top: 4rem;
+  background-color: #f3f4f8;
+  border-radius: 6px;
+  box-shadow: 0 3px 200px #0005;
+  overflow: hidden;
+}
+.optin-root .optin-confirm-modal-inner { display: flex; height: 100%; }
+.optin-root .optin-confirm-modal-image-container { flex: 0 0 33%; height: 100%; overflow: hidden; }
+.optin-root .optin-confirm-modal-image { width: 100%; margin-top: 1.5rem; }
+.optin-root .optin-confirm-modal-body {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 2rem 4rem 2rem 0;
+  overflow-y: auto;
+  color: #333;
+  font-size: 15px;
+}
+
+/* デモ用：保留中のオプトインを「処理済み」に進める（当時の画面にはない） */
+.optin-root .optin-demo-action {
+  position: fixed;
+  top: calc(44px + env(safe-area-inset-top, 0px));
+  right: 12px;
+  z-index: 5;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(40, 0, 60, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.optin-root .optin-demo-action:hover { background: rgba(40, 0, 60, 0.75); }
+
+@media (max-width: 767px) {
+  .optin-root .optin-confirm-modal { height: auto; max-height: calc(100vh - 4rem); margin-top: 2rem; }
+  .optin-root .optin-confirm-modal-image-container { display: none; }
+  .optin-root .optin-confirm-modal-body { padding: 1.5rem; }
+}
