@@ -1,7 +1,7 @@
 // Apostille history (.nty) read / merge / write, and the stored ZIP writer.
 // Run: npx tsx dev-tests/nem-apostille-files.test.ts
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mergeNty, parseNty, serializeNty } from '../src/lib/nem/apostilleNty';
@@ -35,15 +35,21 @@ const files = [
   { name: '日本語 -- Apostille TX x.pdf', data: Uint8Array.from({ length: 5000 }, (_, i) => i % 251) },
   { name: 'empty.bin', data: new Uint8Array(0) },
 ];
-writeFileSync(join(dir, 'x.zip'), buildZip(files));
+const zipBytes = Buffer.from(buildZip(files));
+writeFileSync(join(dir, 'x.zip'), zipBytes);
+// The name must be stored as UTF-8 (checked on the bytes: unzip's handling of non-ASCII names depends on
+// the locale and the platform — macOS mangles them, Debian's unzip escapes them under C.UTF-8).
+ok(zipBytes.includes(Buffer.from('日本語 -- Apostille TX x.pdf', 'utf8')), 'the name is stored as UTF-8');
 try {
   execFileSync('unzip', ['-tq', join(dir, 'x.zip')]);
   ok(true, 'unzip -t passes');
-  // macOS's bundled unzip mangles UTF-8 names (zip bit 11), so use ditto there.
+  // macOS's bundled unzip can't write UTF-8 names (zip bit 11), so use ditto there.
   if (process.platform === 'darwin') execFileSync('ditto', ['-x', '-k', join(dir, 'x.zip'), join(dir, 'out')]);
   else execFileSync('unzip', ['-qo', join(dir, 'x.zip'), '-d', join(dir, 'out')]);
   ok(readFileSync(join(dir, 'out', 'plain.txt'), 'utf8') === 'hello', 'text entry');
-  ok(Buffer.compare(readFileSync(join(dir, 'out', '日本語 -- Apostille TX x.pdf')), Buffer.from(files[1].data)) === 0, 'binary entry with a UTF-8 name');
+  // the file name as written to disk varies with unzip / locale, so find it by its ASCII tail
+  const pdf = readdirSync(join(dir, 'out')).find((n) => n.endsWith(' -- Apostille TX x.pdf'));
+  ok(pdf !== undefined && Buffer.compare(readFileSync(join(dir, 'out', pdf)), Buffer.from(files[1].data)) === 0, 'binary entry with a non-ASCII name', pdf);
 } catch (e) {
   ok(false, 'unzip failed', (e as Error).message);
 }
