@@ -1,0 +1,85 @@
+name: CI
+
+# プルリクエストで走る検証。deploy.yml / release.yml からも呼び出される（workflow_call）。
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # tsc -b（型チェック）→ vite build（単一HTML化＋CSPのハッシュ化）
+      - run: npm run build
+      - name: Verify build output
+        run: |
+          test -f dist/index.html
+          # CSP が meta に入っていて、script-src がハッシュ方式（unsafe-eval / unsafe-inline が無い）であること
+          csp="$(grep -o '<meta http-equiv="Content-Security-Policy"[^>]*>' dist/index.html)"
+          echo "$csp" | grep -q "script-src[^;]*'sha256-"
+          ! echo "$csp" | grep -q "script-src[^;]*'unsafe-eval'"
+          ! echo "$csp" | grep -q "script-src[^;]*'unsafe-inline'"
+          # dist/ は index.html だけ（単一ファイル配布の前提）
+          test "$(find dist -type f | wc -l)" -eq 1
+      - name: Checksum
+        run: |
+          cd dist
+          sha256sum index.html | tee SHA256SUMS.txt
+          {
+            echo '### Build output'
+            echo
+            echo "- size: $(du -h index.html | cut -f1)"
+            echo "- sha256: \`$(sha256sum index.html | cut -d' ' -f1)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kasane-wallet-dist
+          path: |
+            dist/index.html
+            dist/SHA256SUMS.txt
+          retention-days: 14

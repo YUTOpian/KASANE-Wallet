@@ -6,7 +6,7 @@
 // The exact parameters of the official library (hash, iteration count, how the IV travels inside `ciphertext`) are
 // kept as data in VARIANTS below. Making a QR uses VARIANTS[0]; reading tries every variant and accepts the first
 // one whose result is a valid BIP39 phrase, so a wrong password or a wrong guess can never produce a bogus phrase.
-import * as CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js';
 import { getNetworkConfig } from './network';
 import { MnemonicHelper } from './hd';
 

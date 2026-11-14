@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels: [dependencies]
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    # 暗号・SDK 系（@noble/*, @scure/*, symbol-sdk）の更新は、CI の通過に加えて手元でも確認してからマージする。
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    groups:
+      actions:
+        patterns: ['*']

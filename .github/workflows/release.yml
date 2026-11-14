@@ -1,0 +1,59 @@
+name: Release
+
+# タグ（v1.2.3 / v1.2.3-rc.1）を push すると、CI を通したうえで GitHub Release を作り、
+# 単一HTML（kasane-wallet-<tag>.html）とチェックサムを添付する。
+#   npm version 1.2.3 && git push --follow-tags
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  release:
+    name: Create release
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Tag must match package.json version
+        run: |
+          pkg="v$(jq -r .version package.json)"
+          if [ "$pkg" != "$TAG" ]; then
+            echo "::error::tag ($TAG) と package.json の version ($pkg) が一致しません"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run build
+      - name: Package
+        run: |
+          mkdir release
+          cp dist/index.html "release/kasane-wallet-${TAG}.html"
+          (cd release && sha256sum "kasane-wallet-${TAG}.html" > SHA256SUMS.txt)
+      - name: Publish GitHub Release
+        run: |
+          flags=""
+          case "$TAG" in *-*) flags="--prerelease" ;; esac
+          gh release create "$TAG" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --generate-notes \
+            --verify-tag \
+            $flags

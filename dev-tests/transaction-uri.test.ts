@@ -42,7 +42,7 @@ const params = { signerPublicKey: signer, networkByte: NB, recipient, maxFee: 17
 
 // 2. an amount-less transfer (message only) and an empty message
 {
-  const payload = serializeUnsignedTransfer({ ...params, mosaics: [], message: 'hi' });
+  const payload = serializeUnsignedTransfer({ ...params, mosaics: [], allowNoMosaics: true, message: 'hi' });
   const p = parseScanned(buildTransactionUri({ payload, type: TRANSFER_TX_TYPE }));
   ok(p !== null && p.amount === undefined && p.message === 'hi', 'no mosaic: address + message only', p);
   const payload2 = serializeUnsignedTransfer({ ...params, mosaics: [{ id: '6BED913FA20223F8', amount: 1n }], message: '' });

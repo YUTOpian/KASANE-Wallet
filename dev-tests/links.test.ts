@@ -14,7 +14,8 @@ for (const network of ['mainnet', 'testnet'] as const) {
   ok(!symbol.some((l) => l.labelKey === 'guide.link_everyday' || /everyday/i.test(l.url)), `Symbol ${network}: no Everyday Symbol`);
   ok(symbol.length === 6 && symbol[0].labelKey === 'guide.link_site' && symbol.some((l) => l.labelKey === 'guide.link_community') && symbol.some((l) => l.labelKey === 'guide.link_nodes_symbol'), `Symbol ${network}: the other links are kept`, symbol.map((l) => l.labelKey));
   const nem = officialLinks('nem', network);
-  ok(nem.length === 6 && !nem.some((l) => /everyday/i.test(l.url)), `NEM ${network}: links unchanged`);
+  // NEM のテストネットは、エクスプローラーが NEMSCAN と同じなので重ねて出さない（5件）。メインネットは6件。
+  ok(nem.length === (network === 'testnet' ? 5 : 6) && !nem.some((l) => /everyday/i.test(l.url)), `NEM ${network}: links unchanged`, nem.map((l) => l.labelKey));
 }
 
 console.log(fails === 0 ? `ALL OK (${checks} checks)` : `${fails} FAILED of ${checks}`);

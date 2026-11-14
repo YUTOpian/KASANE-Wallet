@@ -1,0 +1,27 @@
+name: 機能の提案
+description: こんな機能がほしい
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 何に困っていますか
+      description: 機能そのものより先に、困りごとを書いてください
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: こうなってほしい
+    validations:
+      required: true
+  - type: dropdown
+    id: chain
+    attributes:
+      label: 対象チェーン
+      multiple: true
+      options: [Symbol, NEM, mijin, 共通]
+  - type: textarea
+    id: ref
+    attributes:
+      label: 参考（公式ウォレットの画面・他アプリ・スクリーンショットなど）

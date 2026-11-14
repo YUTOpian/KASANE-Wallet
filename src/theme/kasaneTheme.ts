@@ -111,7 +111,7 @@ declare module '@mui/material/styles' {
 
 const FONT = '"Segoe UI", "Helvetica Neue", Arial, Roboto, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Meiryo", "Noto Sans JP", "PingFang SC", "Microsoft YaHei", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif';
 
-const FONT_BLOSSOM = '"Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Zen Maru Gothic", "M PLUS Rounded 1c", "Kosugi Maru", "Quicksand", "Nunito", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "PingFang SC", "Microsoft YaHei", "Malgun Gothic", "Apple SD Gothic Neo", "Segoe UI", system-ui, sans-serif';
+const FONT_BLOSSOM = '"Hiragino Maru Gothic ProN", "HG丸ｺﾞｼｯｸM-PRO", "Zen Maru Gothic", "M PLUS Rounded 1c", "Kosugi Maru", "Quicksand", "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", "PingFang SC", "Microsoft YaHei", "Malgun Gothic", "Segoe UI", system-ui, sans-serif';
 
 // さくら / ビジネス colours per design. Both themes keep their own character (soft & round / flat & compact),
 // but the chain still tints them like the dark / white themes: Symbol = warm rose, NEM = fresh mint, mijin = sky blue,

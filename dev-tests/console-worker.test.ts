@@ -6,6 +6,7 @@ import { build } from 'esbuild';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PrivateKey } from 'symbol-sdk';
 import { KeyPair } from 'symbol-sdk/symbol';
 import { createConsoleRunner, createWorkerRunner, fromWireError, STOP_GRACE_MS } from '../src/lib/console/consoleRunner';
@@ -21,13 +22,13 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const dir = mkdtempSync(join(tmpdir(), 'kasane-worker-'));
 const out = join(dir, 'worker.cjs');
 await build({
-  entryPoints: [new URL('../src/lib/console/consoleWorker.ts', import.meta.url).pathname],
+  entryPoints: [fileURLToPath(new URL('../src/lib/console/consoleWorker.ts', import.meta.url))],
   outfile: out, bundle: true, platform: 'node', format: 'cjs', logLevel: 'error',
   define: { 'process.env.SYMBOL_SDK_NO_WASM': '"1"' },
   // vite.config.ts と同じスタブ（Node 専用の WebAssembly バックエンドは使わず、純 JS にする）
   alias: {
-    'bitcore-mnemonic': new URL('../src/shims/bitcore-mnemonic-stub.ts', import.meta.url).pathname,
-    'symbol-crypto-wasm-node': new URL('../src/shims/symbol-crypto-wasm-stub.ts', import.meta.url).pathname,
+    'bitcore-mnemonic': fileURLToPath(new URL('../src/shims/bitcore-mnemonic-stub.ts', import.meta.url)),
+    'symbol-crypto-wasm-node': fileURLToPath(new URL('../src/shims/symbol-crypto-wasm-stub.ts', import.meta.url)),
   },
   banner: { js: "const { parentPort } = require('node:worker_threads'); globalThis.self = { postMessage: (m, t) => parentPort.postMessage(m, t), addEventListener: (type, fn) => { if (type === 'message') parentPort.on('message', (data) => fn({ data })); if (type === 'error') process.on('uncaughtException', (error) => fn({ error, preventDefault() {} })); if (type === 'unhandledrejection') process.on('unhandledRejection', (reason) => fn({ reason, preventDefault() {} })); } };" },
 });

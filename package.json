@@ -2,11 +2,19 @@
   "name": "kasane-wallet",
   "private": true,
   "version": "0.0.0",
+  "description": "KASANE Wallet — Symbol / NEM 対応のブラウザウォレット（単一HTMLで動く）",
+  "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
     "lint": "oxlint",
+    "test": "node scripts/run-tests.mjs",
+    "check": "npm run lint && npm test && npm run build",
     "preview": "vite preview",
     "dao-bot": "tsx src/server/dao-bot/run.ts",
     "nem-dao-bot": "tsx src/server/nem-dao-bot/run.ts"

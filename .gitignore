@@ -5,3 +5,10 @@ dist/
 !.env.example
 .DS_Store
 *.log
+dist-*/
+*.tsbuildinfo
+.vscode/*
+!.vscode/extensions.json
+.idea/
+npm-debug.log*
+coverage/

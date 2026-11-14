@@ -107,7 +107,9 @@ ok(throws(() => chunk([1], 0)) === 'invalid_chunk', 'chunk refuses size 0');
   ok(plan.remaining === 203 && plan.needed === need && plan.batches.map((b) => innerOf(b.input).inner.length).join() === '100,100,3', 'resume: only members without the token, 100 at a time', plan.remaining);
   const sent = plan.batches.flatMap((b) => innerOf(b.input).inner as models.EmbeddedTransferTransactionV1[]);
   ok(sent.length === 203 && sent.every((t) => !doneKeys.has(addressOf(t))) && sent.every((t) => t.mosaics[0].mosaicId.value === BigInt(`0x${pending.tokenId}`)), 'resume: never sends again to those who already have it');
-  const idx = innerOf(plan.stage2('B'.repeat(64)).input).inner[0] as models.EmbeddedAccountMetadataTransactionV1;
+  // 投票箱 E・F が無い DAO では、足りない E・F の書き足しが先頭に付く。索引の登録は、いつも最後。
+  const stage2Inner = innerOf(plan.stage2('B'.repeat(64)).input).inner;
+  const idx = stage2Inner[stage2Inner.length - 1] as models.EmbeddedAccountMetadataTransactionV1;
   ok(idx.scopedMetadataKey === 99n + 2n, 'resume: index goes to the next free key');
   ok(throws(() => planResumeVote(owner, dao, selfSigner, 0, pending, members, done, need - 1n)) === 'vote_token_short', 'resume: not enough vote tokens left is refused');
   const flat = planResumeVote(owner, dao, selfSigner, 0, { ...pending, weighted: false }, members, done, 203n);

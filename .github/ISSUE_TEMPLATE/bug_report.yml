@@ -1,0 +1,58 @@
+name: 不具合の報告
+description: 動作がおかしい・エラーが出る
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ 秘密情報は絶対に貼らないでください
+        **ニーモニック・秘密鍵・パスワード・キーストアファイルの中身**は、Issue に書かないでください（スクリーンショットに写り込んでいないかも確認してください）。
+        診断ログ（診断コンソール）に秘密は含まれない作りですが、貼る前に目で確認してください。
+        脆弱性の報告は Issue ではなく、リポジトリの SECURITY.md の手順で非公開で行ってください。
+  - type: textarea
+    id: what
+    attributes:
+      label: 何が起きましたか
+      description: 期待した動作と、実際の動作
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      placeholder: |
+        1. …を開く
+        2. …を押す
+        3. …と表示される
+    validations:
+      required: true
+  - type: dropdown
+    id: chain
+    attributes:
+      label: チェーン
+      options: [Symbol, NEM, mijin, その他・不明]
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: ネットワーク
+      options: [メインネット, テストネット, 不明]
+    validations:
+      required: true
+  - type: dropdown
+    id: profile
+    attributes:
+      label: プロファイルの種類
+      options: [秘密鍵, SSS Extension, Ledger, 閲覧用（アドレスのみ）, 不明]
+  - type: input
+    id: env
+    attributes:
+      label: 環境
+      description: OS・ブラウザ（バージョン）・公開版かローカルファイルか
+      placeholder: 例) Android 15 / Chrome 140 / GitHub Pages
+  - type: textarea
+    id: logs
+    attributes:
+      label: 診断ログ・エラーメッセージ・スクリーンショット
+      render: text

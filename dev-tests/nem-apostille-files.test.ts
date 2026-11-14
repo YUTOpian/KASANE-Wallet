@@ -39,7 +39,9 @@ writeFileSync(join(dir, 'x.zip'), buildZip(files));
 try {
   execFileSync('unzip', ['-tq', join(dir, 'x.zip')]);
   ok(true, 'unzip -t passes');
-  execFileSync('unzip', ['-qo', join(dir, 'x.zip'), '-d', join(dir, 'out')]);
+  // macOS's bundled unzip mangles UTF-8 names (zip bit 11), so use ditto there.
+  if (process.platform === 'darwin') execFileSync('ditto', ['-x', '-k', join(dir, 'x.zip'), join(dir, 'out')]);
+  else execFileSync('unzip', ['-qo', join(dir, 'x.zip'), '-d', join(dir, 'out')]);
   ok(readFileSync(join(dir, 'out', 'plain.txt'), 'utf8') === 'hello', 'text entry');
   ok(Buffer.compare(readFileSync(join(dir, 'out', '日本語 -- Apostille TX x.pdf')), Buffer.from(files[1].data)) === 0, 'binary entry with a UTF-8 name');
 } catch (e) {

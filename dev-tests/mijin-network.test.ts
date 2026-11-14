@@ -33,7 +33,7 @@ check('supported network bytes', isSupportedNetworkByte(0x68) && isSupportedNetw
 setMijinParams({ networkByte: 0x60, generationHash: HASH, epochAdjustment: 1573430400, currencyMosaicId: '0DC67FBE1CAD29E3', explorer: '' });
 check('configured', isNetworkConfigured('mijin'));
 const cfg = getNetworkConfig('mijin');
-check('config merges node parameters', cfg.networkByte === 0x60 && cfg.generationHash === HASH && cfg.epochAdjustment === 1573430400 && cfg.currencyMosaicId === '0DC67FBE1CAD29E3' && cfg.label === 'mijin v2');
+check('config merges node parameters', cfg.networkByte === 0x60 && cfg.generationHash === HASH && cfg.epochAdjustment === 1573430400 && cfg.currencyMosaicId === '0DC67FBE1CAD29E3' && cfg.label === 'mijin', cfg.label);
 check('static mijin entry stays blank', NETWORKS.mijin.generationHash === '');
 const facade = facadeFor(0x60);
 check('facade carries the generation hash', facade.network.generationHashSeed.toString().toUpperCase() === HASH);

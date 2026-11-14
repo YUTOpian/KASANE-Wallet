@@ -122,7 +122,8 @@ ok(doc !== null && doc.weighted === true, 'default vote is weighted (and the ind
 {
   // 選択肢は A〜F の 6 つまで。5・6 つ目を使わない投票は、これまでと同じ形（e・f を書かない）。
   ok(MAX_VOTE_OPTIONS === 6 && VOTE_BOX_KEYS.length === 6 && DAO_KEY.VOTE_E === 8n && DAO_KEY.VOTE_F === 9n, 'six vote boxes (keys 8 and 9 are new)');
-  ok(!('e' in (doc as object)) && !('f' in (doc as object)), 'a 4-option vote document has no e / f field');
+  const rawDoc = JSON.parse(new TextDecoder().decode(indexTx.message.slice(1))) as Record<string, unknown>;
+  ok(!('e' in rawDoc) && !('f' in rawDoc), 'a 4-option vote document has no e / f field', rawDoc);
   const six = planCreateVote(owner, dao, selfSigner, 0, '6択', ['a', 'b', 'c', 'd', 'e', 'f'], holders);
   const s6 = signDao(ownerPriv, six.stage1.input, mult, deadline);
   const t6 = models.AggregateCompleteTransactionV3.deserialize(utils.hexToUint8(s6.payload));
