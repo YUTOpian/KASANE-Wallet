@@ -16,8 +16,7 @@
     "test": "node scripts/run-tests.mjs",
     "check": "npm run lint && npm test && npm run build",
     "preview": "vite preview",
-    "dao-bot": "tsx src/server/dao-bot/run.ts",
-    "nem-dao-bot": "tsx src/server/nem-dao-bot/run.ts"
+    "dao-bot": "tsx src/server/dao-bot/run.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

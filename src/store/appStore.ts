@@ -77,6 +77,9 @@ interface AppState {
   sendMessage: string;
   // Further mosaics sent together with the main one (Symbol only); amounts are decimal text.
   sendExtraMosaics: SendExtraMosaic[];
+  // Symbol only: the transfer carries no mosaic at all (loaded from a transaction URI / request QR that had none).
+  // The amount is then not asked for and the transfer is signed with no mosaic, exactly as the code had it.
+  sendNoMosaics: boolean;
   // Encrypt that message for the recipient (Symbol only; needs the recipient's public key on chain).
   sendEncrypt: boolean;
   // Fee level chosen for the transfer being composed (null = not picked: the default below).
@@ -132,6 +135,7 @@ interface AppState {
   setSendMessage: (message: string) => void;
   setSendEncrypt: (encrypt: boolean) => void;
   setSendExtraMosaics: (lines: SendExtraMosaic[]) => void;
+  setSendNoMosaics: (on: boolean) => void;
   setSendFeeSpeed: (speed: FeeSpeed) => void;
   setDefaultFeeSpeed: (speed: FeeSpeed) => void;
   clearSendDraft: () => void;
@@ -172,6 +176,7 @@ export const useAppStore = create<AppState>()(
       sendMessage: '',
       sendEncrypt: false,
       sendExtraMosaics: [],
+      sendNoMosaics: false,
       sendFeeSpeed: null,
       defaultFeeSpeed: FEE_SPEED_FALLBACK,
       homePanel: 'history',
@@ -192,7 +197,7 @@ export const useAppStore = create<AppState>()(
         // Pick this network's node right away, so the first screen after the switch does not wait for it.
         if (network !== 'mijin' && (leaveNem || get().chain === 'symbol')) void resolveNode().catch(() => undefined);
         // Cached lists belong to the previous network.
-        set({ network, ...(leaveNem ? { chain: 'symbol' as const, homePanel: 'history' as const } : {}), receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendMosaicId: '' });
+        set({ network, ...(leaveNem ? { chain: 'symbol' as const, homePanel: 'history' as const } : {}), receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendNoMosaics: false, sendMosaicId: '' });
       },
       setCustomNode: (network, url) => {
         setCustomNodeUrl(network, url);
@@ -229,7 +234,7 @@ export const useAppStore = create<AppState>()(
       setMijinParams: (params) => {
         setMijinParams(params);
         // Cached lists / the transfer being composed belong to the previous parameters.
-        set({ mijinParams: params, receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendMosaicId: '' });
+        set({ mijinParams: params, receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendNoMosaics: false, sendMosaicId: '' });
       },
       adoptNode: (detected, url) => {
         const clean = url.trim().replace(/\/+$/, '');
@@ -245,7 +250,7 @@ export const useAppStore = create<AppState>()(
         if (chain === 'nem' && get().network === 'mijin') return; // NEM has no mijin v2
         setModuleChain(chain);
         // Everything of the transfer being composed and the cached history belong to one chain.
-        set({ chain, receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendMosaicId: '', sendFeeSpeed: null, homePanel: 'history' });
+        set({ chain, receiverAddress: '', sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendNoMosaics: false, sendMosaicId: '', sendFeeSpeed: null, homePanel: 'history' });
       },
       setLanguage: (language) => {
         i18n.changeLanguage(language);
@@ -296,13 +301,14 @@ export const useAppStore = create<AppState>()(
       setSendMessage: (message) => set({ sendMessage: message }),
       setSendEncrypt: (encrypt) => set({ sendEncrypt: encrypt }),
       setSendExtraMosaics: (lines) => set({ sendExtraMosaics: lines }),
+      setSendNoMosaics: (on) => set({ sendNoMosaics: on }),
       setSendFeeSpeed: (speed) => set({ sendFeeSpeed: speed }),
       setDefaultFeeSpeed: (speed) => {
         if (!isFeeSpeed(speed)) return;
         setModuleDefaultFeeSpeed(speed);
         set({ defaultFeeSpeed: speed });
       },
-      clearSendDraft: () => set({ sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendFeeSpeed: null }),
+      clearSendDraft: () => set({ sendAmount: '', sendMessage: '', sendEncrypt: false, sendExtraMosaics: [], sendNoMosaics: false, sendFeeSpeed: null }),
       setHomePanel: (panel) => set({ homePanel: panel }),
       bumpLiveTick: () => set((state) => ({ liveTick: state.liveTick + 1 })),
       setLiveSound: (liveSound) => set({ liveSound }),

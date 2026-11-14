@@ -47,9 +47,8 @@ export default function ServiceHub() {
   const signmsgTile = { icon: DrawOutlinedIcon, title: t('home.nav_signmsg'), desc: t('service.signmsg_desc'), to: '/signed-message' };
   // 投票 (polls written as 0-coin transfers) is on both chains, with the same mechanism.
   const votingTile = { icon: HowToVoteOutlinedIcon, title: t('home.nav_voting'), desc: t('service.voting_desc'), to: '/voting' };
-  // DAO: Symbol はガバナンス投票・ポイント・特典・交換で、トランザクションの署名だけで動くので、秘密鍵のプロファイルと SSS Extension で使える（閲覧用 / Ledger には出さない）。
-  // NEM はマルチシグ + ガバナンストークン + ポイント・特典 + 投票で、途中で DAO アカウントの鍵も使うので、秘密鍵のプロファイルだけ。
-  const daoTile = { icon: AccountBalanceOutlinedIcon, title: t('home.nav_dao'), desc: t(chain === 'nem' ? 'service.nemdao_desc' : 'service.dao_desc'), to: '/dao' };
+  // DAO は Symbol だけ。ガバナンス投票・ポイント・特典・交換で、トランザクションの署名だけで動くので、秘密鍵のプロファイルと SSS Extension で使える（閲覧用 / Ledger には出さない）。
+  const daoTile = { icon: AccountBalanceOutlinedIcon, title: t('home.nav_dao'), desc: t('service.dao_desc'), to: '/dao' };
   // コンソール (コードを打ち込んで動かす)。Symbol / NEM どちらでも（中身はチェーンに合わせて切り替わる）。
   const consoleTile = { icon: TerminalOutlinedIcon, title: t('home.nav_console'), desc: t('service.console_desc'), to: '/console' };
   // NFTビューアー (モザイクに紐づけられた画像を見る) は Symbol だけ。
@@ -63,7 +62,6 @@ export default function ServiceHub() {
     signmsgTile,
     nemonsterTile,
     votingTile,
-    daoTile,
     consoleTile,
     // Symbol 事前オプトイン（NEM Wallet 2.5.0 当時の画面）の体験。実際の送信はしない。
     { icon: SwapHorizOutlinedIcon, title: t('home.nav_optin'), desc: t('service.optin_desc'), to: '/optin' },

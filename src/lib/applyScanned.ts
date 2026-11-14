@@ -74,6 +74,8 @@ export async function applyScannedText(decoded: string): Promise<ApplyScannedRes
   s.setSendAmount('');
   s.setSendMosaicId(symbolPayment?.mosaicId ?? '');
   s.setSendExtraMosaics([]);
+  // A transaction URI / request QR that carries no mosaic is sent with no mosaic (never with an added "XYM x 0").
+  s.setSendNoMosaics(!nemMode && symbolPayment?.noMosaics === true);
   if (parsed.amount) {
     try {
       if (parsed.amount.startsWith('atomic:') && symbolPayment) {

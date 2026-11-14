@@ -68,6 +68,7 @@ export default function SendConfirmation() {
   const sendMessage = useAppStore((s) => s.sendMessage);
   const sendEncrypt = useAppStore((s) => s.sendEncrypt);
   const sendExtraMosaics = useAppStore((s) => s.sendExtraMosaics);
+  const sendNoMosaics = useAppStore((s) => s.sendNoMosaics);
   const receiverAddress = useAppStore((s) => s.receiverAddress);
   useAppStore((s) => s.network);
   const chain = useAppStore((s) => s.chain);
@@ -76,6 +77,8 @@ export default function SendConfirmation() {
   const encrypt = sendEncrypt && !!sendMessage;
   // More mosaics sent together with the main one (Symbol and NEM).
   const extras = sendExtraMosaics;
+  // Loaded from a transaction URI that carried no mosaic (Symbol): signed with no mosaic, as the URI had it.
+  const noMosaics = !isNem && sendNoMosaics;
   const sendMosaicId = useAppStore((s) => s.sendMosaicId);
   const feeSpeed = useAppStore((s) => s.sendFeeSpeed ?? s.defaultFeeSpeed);
   const clearReceiverAddress = useAppStore((s) => s.clearReceiverAddress);
@@ -189,12 +192,12 @@ export default function SendConfirmation() {
     }
     let cancelled = false;
     setEstimatedFee('loading');
-    quoteFee(1 + extras.length, sendMessage, feeSpeed, encrypt)
+    quoteFee(noMosaics ? 0 : 1 + extras.length, sendMessage, feeSpeed, encrypt)
       .then((q) => { if (!cancelled) setEstimatedFee(formatAtomic(q.fee, CURRENCY_DIVISIBILITY)); })
       .catch(() => { if (!cancelled) setEstimatedFee(null); });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendMessage, feeSpeed, isNem, sendAmount, encrypt, extras.length, nemInfos, mosaicId]);
+  }, [sendMessage, feeSpeed, isNem, sendAmount, encrypt, extras.length, nemInfos, mosaicId, noMosaics]);
 
   // 送金のあとの片付けと Home への移動。
   const finishSend = () => {
@@ -212,7 +215,8 @@ export default function SendConfirmation() {
       setErrorMessage(t('send.nem_mosaic_unreadable'));
       return;
     }
-    const amountAtomic = parseDecimal(sendAmount, mainDivisibility);
+    // No mosaic at all: there is no amount to read.
+    const amountAtomic = noMosaics ? 0n : parseDecimal(sendAmount, mainDivisibility);
     if (amountAtomic === null) {
       setErrorMessage(t('send.invalid_amount'));
       return;
@@ -225,14 +229,14 @@ export default function SendConfirmation() {
         return;
       }
       // The extra mosaics, each with its own divisibility (looked up now rather than trusting the summary's cache).
-      const extraIds = extras.map((l) => (isNem ? l.id.toLowerCase() : l.id.toUpperCase()));
+      const extraIds = (noMosaics ? [] : extras).map((l) => (isNem ? l.id.toLowerCase() : l.id.toUpperCase()));
       const extraInfosNow: Record<string, { divisibility: number } | undefined> = isNem ? nemNow : extraIds.length > 0 ? await getMosaicInfos(extraIds) : {};
       if (isNem && [mosaicId, ...extraIds].some((id) => nemNow[id] === undefined)) {
         setErrorMessage(t('send.nem_mosaic_unreadable'));
         return;
       }
       const extraMosaics: { id: string; amount: bigint }[] = [];
-      for (let i = 0; i < extras.length; i += 1) {
+      for (let i = 0; i < extraIds.length; i += 1) {
         const atomic = parseDecimal(extras[i].amount, extraInfosNow[extraIds[i]]?.divisibility ?? 0);
         if (atomic === null) {
           setErrorMessage(t('send.invalid_amount'));
@@ -272,7 +276,8 @@ export default function SendConfirmation() {
           sss: viaSss,
           publicKey: activeWallet.publicKey,
           recipient: receiverAddress,
-          mosaics: [{ id: mosaicId, amount: amountAtomic }, ...extraMosaics],
+          mosaics: noMosaics ? [] : [{ id: mosaicId, amount: amountAtomic }, ...extraMosaics],
+          allowNoMosaics: noMosaics,
           message: sendMessage,
           encrypt,
           feeSpeed,
@@ -286,7 +291,8 @@ export default function SendConfirmation() {
           sss: viaSss,
           publicKey: activeWallet.publicKey,
           recipient: receiverAddress,
-          mosaics: [{ id: mosaicId, amount: amountAtomic }, ...extraMosaics],
+          mosaics: noMosaics ? [] : [{ id: mosaicId, amount: amountAtomic }, ...extraMosaics],
+          allowNoMosaics: noMosaics,
           message: sendMessage,
           encrypt,
           feeSpeed,
@@ -346,12 +352,12 @@ export default function SendConfirmation() {
     : [];
 
   // One row of the summary card: small teal label, comfortable value underneath.
-  const amountLines = [
+  const amountLines = noMosaics ? [t('send.no_mosaics_value')] : [
     `${sendAmount} ${currencyLabel}`,
     ...extras.map((l) => `${l.amount} ${extraInfos[l.id.toUpperCase()]?.symbol ?? l.id}`),
   ];
   const rows: { label: string; value: string; big?: boolean; breakAll?: boolean; multiline?: boolean }[] = [
-    { label: t('common.amount'), value: amountLines.join('\n'), big: extras.length === 0, breakAll: true, multiline: extras.length > 0 },
+    { label: noMosaics ? t('send.no_mosaics_label') : t('common.amount'), value: amountLines.join('\n'), big: extras.length === 0 && !noMosaics, breakAll: true, multiline: extras.length > 0 },
     { label: t('send.network'), value: `${chainMeta(chain).name} ${activeNetworkLabel()}` },
     {
       label: t('common.destination'),

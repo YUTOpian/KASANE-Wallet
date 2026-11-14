@@ -19,7 +19,7 @@ npm run dev        # 開発サーバー
 | `npm run lint` | oxlint |
 | `npm run typecheck` | 型チェック（`tsc -b`） |
 | `npm test` | `dev-tests/*.test.ts` をすべて実行 |
-| `npm test -- links nem-dao` | 名前に一致するテストだけ実行 |
+| `npm test -- links dao` | 名前に一致するテストだけ実行 |
 | `npm run build` | 型チェック＋本番ビルド（`dist/index.html` 1 ファイル） |
 | `npm run check` | lint → test → build（プルリクの前に） |
 
