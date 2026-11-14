@@ -84,9 +84,6 @@ const SupernodePage = lazy(() => import('./pages/supernode/SupernodePage'));
 const DaoTop = lazy(() => import('./pages/dao/DaoTop'));
 const DaoCreate = lazy(() => import('./pages/dao/DaoCreate'));
 const DaoFrame = lazy(() => import('./pages/dao/DaoFrame'));
-const NemDaoTop = lazy(() => import('./pages/nem/NemDaoTop'));
-const NemDaoCreate = lazy(() => import('./pages/nem/NemDaoCreate'));
-const NemDaoView = lazy(() => import('./pages/nem/NemDaoView'));
 
 function RouteFallback() {
   return (
@@ -339,10 +336,10 @@ const routeDefs: { path: string; name: string; element?: ReactElement }[] = [
   { path: '/voting', name: 'NemVotingList', element: <KeyRequired sssOk><NotMijin><ServiceFrame><ByChain symbol={<SymbolVotingList />} nem={<NemVotingList />} /></ServiceFrame></NotMijin></KeyRequired> },
   { path: '/voting/create', name: 'NemVotingCreate', element: <KeyRequired sssOk><NotMijin><ByChain symbol={<SymbolVotingCreate />} nem={<NemVotingCreate />} /></NotMijin></KeyRequired> },
   { path: '/voting/poll/:address', name: 'NemVotingDetail', element: <KeyRequired sssOk><NotMijin><ByChain symbol={<SymbolVotingDetail />} nem={<NemVotingDetail />} /></NotMijin></KeyRequired> },
-  // DAO: 一覧・作成・開いた DAO（?id=<公開鍵>&tab=…）。Symbol 版（symbol_book_v3_demo_dao の移植）は、秘密鍵をパスワードで開いて署名するプロファイルと SSS Extension のプロファイル（閲覧用 / Ledger は不可）。NEM 版（マルチシグ + ガバナンストークン + ポイント・特典 + 投票）は、秘密鍵のプロファイルだけ（途中で DAO アカウントの鍵も使うため）。
-  { path: '/dao', name: 'DaoTop', element: <KeyRequired sssOk><NotMijin><ServiceFrame><ByChain symbol={<DaoTop />} nem={<KeyRequired><NemDaoTop /></KeyRequired>} /></ServiceFrame></NotMijin></KeyRequired> },
-  { path: '/dao/create', name: 'DaoCreate', element: <KeyRequired sssOk><NotMijin><ByChain symbol={<DaoCreate />} nem={<KeyRequired><NemDaoCreate /></KeyRequired>} /></NotMijin></KeyRequired> },
-  { path: '/dao/view', name: 'DaoView', element: <KeyRequired sssOk><NotMijin><ByChain symbol={<DaoFrame />} nem={<KeyRequired><NemDaoView /></KeyRequired>} /></NotMijin></KeyRequired> },
+  // DAO: 一覧・作成・開いた DAO（?id=<公開鍵>&tab=…）。Symbol 版（symbol_book_v3_demo_dao の移植）は、秘密鍵をパスワードで開いて署名するプロファイルと SSS Extension のプロファイル（閲覧用 / Ledger は不可）。NEM には DAO は無い（Symbol のみ。NEM では /top へ戻す）。
+  { path: '/dao', name: 'DaoTop', element: <KeyRequired sssOk><NotMijin><SymbolOnly><ServiceFrame><DaoTop /></ServiceFrame></SymbolOnly></NotMijin></KeyRequired> },
+  { path: '/dao/create', name: 'DaoCreate', element: <KeyRequired sssOk><NotMijin><SymbolOnly><DaoCreate /></SymbolOnly></NotMijin></KeyRequired> },
+  { path: '/dao/view', name: 'DaoView', element: <KeyRequired sssOk><NotMijin><SymbolOnly><DaoFrame /></SymbolOnly></NotMijin></KeyRequired> },
 ];
 
 // HashRouter (not BrowserRouter) so this works both when opened directly as a local

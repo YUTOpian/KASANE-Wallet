@@ -127,6 +127,8 @@ export default function SendForm() {
   const sendEncrypt = useAppStore((s) => s.sendEncrypt);
   const sendExtraMosaics = useAppStore((s) => s.sendExtraMosaics);
   const setSendExtraMosaics = useAppStore((s) => s.setSendExtraMosaics);
+  const sendNoMosaics = useAppStore((s) => s.sendNoMosaics);
+  const setSendNoMosaics = useAppStore((s) => s.setSendNoMosaics);
   const setSendEncrypt = useAppStore((s) => s.setSendEncrypt);
   const sendMosaicId = useAppStore((s) => s.sendMosaicId);
   const setSendMosaicId = useAppStore((s) => s.setSendMosaicId);
@@ -198,6 +200,8 @@ export default function SendForm() {
 
   // Further mosaics sent together with the main one (Symbol and NEM). Each line has its own balance and divisibility.
   const extras = sendExtraMosaics;
+  // A transfer loaded from a transaction URI that carried no mosaic (Symbol): no mosaic and no amount are asked for or added.
+  const noMosaics = !isNem && sendNoMosaics;
   const extraLines = extras.map((line) => {
     const asset = assets.find((o) => o.id.toUpperCase() === line.id.toUpperCase()) ?? null;
     const lineDecimals = asset?.divisibility ?? 0;
@@ -367,7 +371,7 @@ export default function SendForm() {
   // While the recipient's public key is still being looked up, an encrypted send has to wait: going on
   // now would send the message in the clear.
   const waitingForKey = sendEncrypt && recipient === 'loading';
-  const canGo = addressValid && amountAtomic !== null && !overBalance && !loadingAssets && !messageTooLong && !waitingForKey && extrasOk;
+  const canGo = addressValid && (noMosaics || amountAtomic !== null) && !overBalance && !loadingAssets && !messageTooLong && !waitingForKey && extrasOk;
 
   // Fee. Symbol: re-quoted (debounced) whenever the message changes; it depends only on the
   // transaction size. NEM: a fixed formula of the amount sent and the message length.
@@ -394,7 +398,7 @@ export default function SendForm() {
     setFees('loading');
     const timer = setTimeout(async () => {
       try {
-        const q = await quoteFees(1 + extras.length, messageTooLong ? undefined : sendMessage, encryptActive);
+        const q = await quoteFees(noMosaics ? 0 : 1 + extras.length, messageTooLong ? undefined : sendMessage, encryptActive);
         if (!cancelled) {
           setFees(Object.fromEntries(FEE_SPEEDS.map((speed) => [speed, formatAtomic(q[speed].fee, CURRENCY_DIVISIBILITY)])) as Record<FeeSpeed, string>);
         }
@@ -407,7 +411,7 @@ export default function SendForm() {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendMessage, messageTooLong, encryptActive, extras, network, chain, amountText, assets, loadingAssets, sendMosaicId]);
+  }, [sendMessage, messageTooLong, encryptActive, extras, network, chain, amountText, assets, loadingAssets, sendMosaicId, noMosaics]);
 
   // The fee is paid in XYM: sending XYM takes it out of the same balance as the amount.
   const feeAtomic = fee !== null && fee !== 'loading' ? (parseDecimal(fee, CURRENCY_DIVISIBILITY) ?? 0n) : 0n;
@@ -543,6 +547,19 @@ export default function SendForm() {
         {/* What the chain knows about the recipient (shown once the address is valid). */}
         {addressValid && <RecipientInfoCard address={normalizedAddress} recipient={recipient} history={history} ownMatch={ownMatch} />}
 
+        {/* Loaded from a transaction URI with no mosaic: it is sent exactly so, with no mosaic and no amount. */}
+        {noMosaics && (
+          <Alert
+            severity="info"
+            sx={{ mt: 3 }}
+            action={<Button color="inherit" size="small" onClick={() => setSendNoMosaics(false)}>{t('send.no_mosaics_add')}</Button>}
+          >
+            <Typography sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{t('send.no_mosaics_title')}</Typography>
+            <Typography sx={{ fontSize: '0.85rem' }}>{t('send.no_mosaics_note')}</Typography>
+          </Alert>
+        )}
+
+        {!noMosaics && (<>
         {/* The mosaic to send (chosen right here) on the left, the amount to send on the right (one column on a phone). */}
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' }, columnGap: 2, rowGap: 2, alignItems: 'start', mt: 3 }}>
           <Box sx={{ minWidth: 0 }}>
@@ -625,6 +642,7 @@ export default function SendForm() {
             <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('send.mosaic_limit', { count: MAX_MOSAICS_PER_SEND })}</Typography>
           )}
         </Box>
+        </>)}
         {/* NEM: a mosaic with a levy costs the sender an extra amount on every transfer. */}
         {isNem && (selected?.hasLevy || extraLines.some((l) => l.asset?.hasLevy)) && (
           <Alert severity="warning" sx={{ mt: 1.5 }}>{t('send.nem_levy_note')}</Alert>
@@ -690,7 +708,7 @@ export default function SendForm() {
         )}
 
         {/* The transfer as a transaction URI / QR (Symbol only; needs a complete, valid form). */}
-        {!isNem && !(encryptActive && sendMessage) && canGo && amountAtomic !== null && fees !== 'loading' && fees !== null && feeAtomic > 0n && (
+        {!isNem && !noMosaics && !(encryptActive && sendMessage) && canGo && amountAtomic !== null && fees !== 'loading' && fees !== null && feeAtomic > 0n && (
           <TransactionUriCard
             recipient={normalizedAddress}
             mosaics={[

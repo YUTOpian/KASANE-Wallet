@@ -45,9 +45,20 @@ const params = { signerPublicKey: signer, networkByte: NB, recipient, maxFee: 17
   const payload = serializeUnsignedTransfer({ ...params, mosaics: [], allowNoMosaics: true, message: 'hi' });
   const p = parseScanned(buildTransactionUri({ payload, type: TRANSFER_TX_TYPE }));
   ok(p !== null && p.amount === undefined && p.message === 'hi', 'no mosaic: address + message only', p);
+  ok(p?.noMosaics === true, 'no mosaic: flagged, so the send form signs it with no mosaic (no added XYM x 0)', p);
   const payload2 = serializeUnsignedTransfer({ ...params, mosaics: [{ id: '6BED913FA20223F8', amount: 1n }], message: '' });
   const p2 = parseScanned(buildTransactionUri({ payload: payload2, type: TRANSFER_TX_TYPE }));
   ok(p2?.message === undefined && p2?.amount === 'atomic:1', 'no message', p2);
+  ok(p2?.noMosaics === undefined, 'a transfer that has a mosaic is not flagged as mosaic-less', p2);
+}
+
+// 2b. issue #1: a message-only transfer URI made by another service (testnet, 0 mosaics, 0xCF bytes)
+{
+  const uri = 'web+symbol://transaction?data=CF000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001985441000000000000000000C783421D00000098C566273B3A55C8709DEE143B8DC9DA2DAC8FFA98FE3AAB2F00000000000000004558414D504C452D4348414C4C454E47453A30313233343536373839616263646566303132333435363738396162&type=16724&generationHash=49D6E1CE276A85B70EAFE52349AACCA389302E7A9754BCF1221E79494FC665A4';
+  const p = parseScanned(uri);
+  ok(p?.address === 'TDCWMJZ3HJK4Q4E55YKDXDOJ3IW2ZD72TD7DVKY', 'issue #1: recipient', p?.address);
+  ok(p?.message === 'EXAMPLE-CHALLENGE:0123456789abcdef0123456789ab', 'issue #1: message', p?.message);
+  ok(p?.noMosaics === true && p?.amount === undefined && p?.mosaicId === undefined && p?.extraMosaics === undefined, 'issue #1: no mosaic at all', p);
 }
 
 // 3. several mosaics: the first is the main one, the others are carried as extras (never dropped)

@@ -19,6 +19,9 @@ export interface ScannedPayment {
   extraMosaics?: Array<{ id: string; amount: string }>;
   // Set when the code is a serialized transaction (transaction URI / request QR) naming a network.
   generationHash?: string;
+  // True when the code is a transaction with no mosaic at all (a message-only transfer). The send form then
+  // sends it with no mosaic too, instead of adding an empty "XYM x 0" line the code never had.
+  noMosaics?: boolean;
   // Things the send form cannot carry over; the caller must refuse rather than silently drop them.
   unsupported?: 'multiple_mosaics' | 'encrypted_message';
 }
@@ -93,6 +96,7 @@ function paymentFromTransfer(parsed: ParsedTransfer, generationHash?: string): S
     message: parsed.message || undefined,
     generationHash,
     extraMosaics: parsed.mosaics.length > 1 ? parsed.mosaics.slice(1).map((m) => ({ id: m.id, amount: `atomic:${m.amount.toString()}` })) : undefined,
+    noMosaics: parsed.mosaics.length === 0 ? true : undefined,
     unsupported: parsed.encryptedMessage ? 'encrypted_message' : undefined,
   };
 }

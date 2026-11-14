@@ -1,5 +1,23 @@
 # Vintage Wallet — Symbol 版 変更点
 
+## 修正: モザイクなしの送金URIに署名すると「XYM × 0」が付く（Symbol・issue #1）
+- 原因: 送金は、URIを読み込んだ場合でも必ずモザイクを1件組んでいた（モザイクが未選択なら XYM。金額が空だと進めないので 0 を入れる必要があった）。そのため、モザイクなし（メッセージのみ）のURIに署名すると、`mosaicsCount` が 0 → 1、size が 0xCF → 0xDF になり、発行側が「手数料と期限以外は発行した内容のまま」を確かめる用途で不一致になっていた。
+- 変更（方針B）: 読み込んだ `web+symbol://transaction` のモザイクが 0 件だったときだけ、モザイクなしで組む。ほかの挙動は変えない（手入力の送金、モザイクが1件以上あるURI、「0 XYM を付けて送る」はこれまでどおり）。
+  - `lib/symbol/qr.ts`: `ScannedPayment.noMosaics`（モザイク 0 件の取引で true）。
+  - `lib/applyScanned.ts` → `store/appStore.ts`: 読み込みのたびに `sendNoMosaics` を設定（Symbol のみ。別のコードを読み込む・チェーンやネットワークを切り替える・送金後の片付けで false に戻る）。
+  - `pages/top/SendForm.tsx`: `sendNoMosaics` のあいだは、モザイク・金額の欄の代わりに案内を出し、金額なしで「確認画面へ」に進める。案内の「モザイクも送る」で通常の入力に戻せる。手数料の見積もりもモザイク 0 件で出す。
+  - `pages/send/SendConfirmation.tsx`: モザイク 0 件・`allowNoMosaics: true` で署名（パスワード・Ledger・SSS・署名済みQRのどれも同じ）。見積もりもモザイク 0 件。
+  - 翻訳 `send.no_mosaics_*`（ja・en・zh・ko・ru）、`dev-tests/transaction-uri.test.ts`（モザイク 0 件の旗、issue #1 のURIの読み取り）。
+- 範囲外: 「送金フォームで金額が空のままでも進める」（案C）は、手入力の意味づけが変わるので、この修正には含めていない。
+
+## 削除: NEM 版の DAO
+- NEM の DAO（マルチシグ + ガバナンストークン + ポイント・特典 + 投票）を削除した。DAO は Symbol だけになる。
+- `/dao`・`/dao/create`・`/dao/view` は Symbol 専用（NEM では「ホーム」へ戻る）。NEM の「サービス」の DAO タイルも外した。
+- 削除: `lib/nem/dao.ts`・`daoCore.ts`・`daoMoves.ts`、`pages/nem/NemDao*.tsx`（8 ファイル）、`server/nem-dao-bot/`、`docs/NEM_DAO.md`、`dev-tests/nem-dao*.test.ts`（5 本）、翻訳 `nemdao`・`service.nemdao_desc`（ja・en・zh・ko・ru）、`package.json` の `nem-dao-bot`、`.env.example` の `KASANE_NEM_DAO_BOT_*`。
+- 変更: `router.tsx`・`ServiceHub.tsx`・`dev-tests/dao-access.test.ts`（NEM の部分を除く）。
+- 確認したこと: `tsc -b` が通る、`npm test` 120 本が通る。NEM の投票（`/voting`）はそのまま残る。
+- 以下の過去の記録（NEM の DAO を追加した項目）は、当時の記録としてそのまま残してある。
+
 ## 追加: DAO のソーシャルメタデータ（Symbol）
 - 「DAO設定」に「DAOのソーシャルメタデータ」を追加。管理者が、DAO アカウントに URL・名前・アイコン画像・ネームスペース（任意）を登録・更新できる（ウォレットのソーシャルメタデータと同じ仕様。署名者は DAO、手数料は操作するアカウント、SSS Extension 対応）。DAO の「ホーム」にも、登録内容のカードを出す。
 - 修正: DAO のメタデータを読むとき、`social_meta_data` のキー（64bit の大きな値）を「key 99 以上 = 投票の索引」と取り違えないようにした（`splitDaoMetadata`）。取り違えると、ソーシャルメタデータを付けた DAO で、次の投票の索引のキーがずれてしまう。
